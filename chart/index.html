@@ -1,0 +1,145 @@
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Roboto', sans-serif;
+    }
+    #adder {
+      display:none;
+    }
+    #adder.visible {
+      display:block;
+    }
+
+
+  </style>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', { 'packages': ['gantt'] });
+    google.charts.setOnLoadCallback(yo);
+
+    let data;
+    let chartHeight = 500;
+    function yo() {
+      data = new google.visualization.DataTable();
+      addData();
+    }
+
+
+
+    function addData() {
+      //data = new google.visualization.DataTable();
+      data.addColumn('string', 'Task ID');
+      data.addColumn('string', 'Task Name');
+      data.addColumn('string', 'Resource');
+      data.addColumn('date', 'Start Date');
+      data.addColumn('date', 'End Date');
+      data.addColumn('number', 'Duration');
+      data.addColumn('number', 'Percent Complete');
+      data.addColumn('string', 'Dependencies');
+
+      data.addRows([
+        ['2014Spring', 'Spring 2014', 'spring',
+          new Date(2014, 2, 22), new Date(2014, 5, 20), null, 100, null],
+        ['2014Summer', 'Summer 2014', 'summer',
+          new Date(2014, 5, 21), new Date(2014, 8, 20), null, 100, null],
+        ['2014Autumn', 'Autumn 2014', 'autumn',
+          new Date(2014, 8, 21), new Date(2014, 11, 20), null, 100, null],
+        ['2014Winter', 'Winter 2014', 'winter',
+          new Date(2014, 11, 21), new Date(2015, 2, 21), null, 100, null],
+        ['2015Spring', 'Spring 2015', 'spring',
+          new Date(2015, 2, 22), new Date(2015, 5, 20), null, 50, null],
+        ['2015Summer', 'Summer 2015', 'summer',
+          new Date(2015, 5, 21), new Date(2015, 8, 20), null, 0, null],
+        ['2015Autumn', 'Autumn 2015', 'autumn',
+          new Date(2015, 8, 21), new Date(2015, 11, 20), null, 0, null],
+        ['2015Winter', 'Winter 2015', 'winter',
+          new Date(2015, 11, 21), new Date(2016, 2, 21), null, 0, null],
+        ['Football', 'Football Season', 'sports',
+          new Date(2014, 8, 4), new Date(2015, 1, 1), null, 100, null],
+        ['Baseball', 'Baseball Season', 'sports',
+          new Date(2015, 2, 31), new Date(2015, 9, 20), null, 14, null],
+        ['Basketball', 'Basketball Season', 'sports',
+          new Date(2014, 9, 28), new Date(2015, 5, 20), null, 86, null],
+        ['Hockey', 'Hockey Season', 'sports',
+          new Date(2014, 9, 8), new Date(2015, 5, 21), null, 89, null]
+      ]);
+      refreshChart();
+    }
+
+    function refreshChart() {
+      x = data.getNumberOfRows();
+      let newHeight = x * 30;
+      var options = {
+        height: chartHeight,
+        gantt: {
+          trackHeight: 30
+        }
+      };
+
+      var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    }
+
+
+    function doForm(e) {
+      e.preventDefault();
+      data.addRows([[
+        document.getElementById('user_form').elements['taskId'].value,
+        document.getElementById('user_form').elements['taskname'].value,
+        document.getElementById('user_form').elements['resource'].value,
+        new Date(document.getElementById('user_form').elements['start'].value),
+        new Date(document.getElementById('user_form').elements['end'].value),
+        null,
+        Number(document.getElementById('user_form').elements['completeness'].value),
+        null
+      ]]);
+
+      refreshChart();
+      addChartData("hello world!");
+      return false;
+    }
+  </script>
+</head>
+
+<body class="min-h-full relative">
+  <div id="chart_div" class="container mx-auto px-4 pt-4"></div>
+
+  <div id="adder" class="container mx-auto px-4 pt-4 flex flex-col w-4/12 shadow-md absolute bg-white shadow-lg right-20 bottom-20">
+    <form id="user_form" onsubmit="return doForm(event);" class="flex-col flex gap-2">
+      <div><label class="w-5/12 inline-block" for="taskId">Task ID</label><input type="text" name="taskId" value="" placeholder="Task ID" class="p-1 border-gray-80 border-solid"></div>
+      <div><label class="w-5/12 inline-block" for="taskname">Activity</label><input type="text" name="taskname" value="" placeholder="Task Name" class="p-1 border-gray-80"></div>
+      <div><label class="w-5/12 inline-block" for="resource">Person</label><input type="text" name="resource" value="" placeholder="Resource" class="p-1 border-gray-80"></div>
+      <div><label class="w-5/12 inline-block" for="start">Start date</label><input type="date" name="start" value="" class="p-1 border-gray-80"></div>
+      <div><label class="w-5/12 inline-block" for="end">End date</label><input type="date" name="end" value="" class="p-1 border-gray-80"></div>
+      <div><label class="w-5/12 inline-block" for="completeness">% complete</label><input type="number" name="completeness" value="" placeholder="Percent complete" class="p-1 border-gray-80"></div>
+      <input class="p-2 cursor-pointer" type="submit" id="myAnchor" value="Go!">
+    </form>
+  </div>
+
+
+  <div class="container fixed bottom-0 border-t border-gray-80 h-20">
+
+    <span id="showAdder"
+      class="absolute bg-blue-500 border-gray-50 p-5 flex justify-center items-center shadow-md w-8 h-8 rounded-full mt-4 mr-6 right-20 cursor-pointer" onclick="showAdder()">+</span>
+
+  </div>
+
+</body>
+<script>
+function showAdder() {
+  var element = document.getElementById("adder");
+  element.classList.toggle("visible");
+}
+
+
+</script>
+</html>
