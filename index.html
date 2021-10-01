@@ -141,5 +141,19 @@ function showAdder() {
 }
 
 
+function addChartData(addedData) {
+const headers = new Headers();
+headers.append('Content-Type', 'application/json');
+  
+  const options = {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({addedData}),
+  };
+
+  const response = await fetch('/.netlify/functions/index', options);
+}
+
+
 </script>
 </html>
